@@ -25,17 +25,17 @@ public class midtierMonitors {
 			String inputLine;
 			StringBuffer response = new StringBuffer();
 			while ((inputLine = in.readLine()) != null) {
-				return_Key = inputLine.trim();
-				/*if(inputLine.matches("<status>ok</status>"))
+				String temp = inputLine.trim();
+				if(temp.matches("<status>ok</status>"))
 				{
 					
-					//return_Key = temp.substring(temp.indexOf(">")+1,temp.indexOf("/")-1);
+					return_Key = temp.substring(temp.indexOf(">")+1,temp.indexOf("/")-1);
 				}
 				else
 				{
 					
-					//return_Key = temp.substring(temp.indexOf(">")+1,temp.indexOf("/")-1);
-				}*/
+					return_Key = temp.substring(temp.indexOf(">")+1,temp.indexOf("/")-1);
+				}
 			}
 			if(readMainConfig.EnableLog.equals("Yes"))
 			{

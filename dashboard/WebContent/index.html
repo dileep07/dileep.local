@@ -4,7 +4,9 @@
 <title>SMSA Dashboard</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+ <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <!-- Main Bootstrap includes -->
 <!-- ################################################################# -->
 <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -54,7 +56,7 @@
 		</div>
 	</nav>
 
-	<div class="container-fluid">
+	<div class="container-fluid" ng-app="dashboardApp" ng-controller="dashboardController">
 		<div class="row">
 			<h1></h1>
 			<div class="col-md-12">
@@ -76,7 +78,7 @@
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
 				<div id="Midtier_Service">
-					
+					<div class="jumbotron" ng-class="midtierStatusClass"><h3 align="center">{{midtierStatusMesg}}</h3></div>	
 				</div>
 			</div>
 		</div>
@@ -85,12 +87,14 @@
 			<div class="col-md-5">
 			<div class="jumbotron alert">
 				
-  						<div align="center"><ul id="PROD_IIS" style="list-style-type:none"><h4 align="center">Production - IIS</h4>
-  						<li><span align="center" class="label label-danger" id="PROD_IIS_aupr1ii004nabwi">aupr1ii004nabwi - Not Reacheable</span></li>
-  						<li><span align="center" class="label label-danger" id="PROD_IIS_aupr1ii005nabwi">aupr1ii005nabwi - Not Reacheable</span></li><li>
-  						<span align="center" class="label label-danger" id="PROD_IIS_aupr1ii006nabwi">aupr1ii006nabwi - Not Reacheable</span></li>
-  						<li><span align="center" class="label label-danger" id="PROD_IIS_aupr1ii007nabwi">aupr1ii007nabwi - Not Reacheable</span></li>	
-  						</ul></div>
+  						<div align="center">
+  							<ul id="PROD_IIS" style="list-style-type:none">
+  								<h4 align="center">Production - IIS</h4>
+  								<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'PROD'}">
+  									<span align="center" ng-class="setLabel('{{dashboard.Status_IISHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_IISHealth}}</span>
+  								</li>
+  							</ul>
+  						</div>
 			</div>
 			</div>
 			<div class="col-md-5">
@@ -98,6 +102,9 @@
 				<div align="center">
 					<ul id="DR_IIS" style="list-style-type:none">
 						<h4 align="center">DR - IIS</h4>
+						<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'DR'}">
+  									<span align="center" ng-class="setLabel('{{dashboard.Status_IISHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_IISHealth}}</span>
+  								</li>
   					</ul>
 				</div>
 			</div>
@@ -111,6 +118,9 @@
 				<div align="center">
 					<ul id="PROD_Tomcat" style="list-style-type:none">
 						<h4 align="center">Production - Tomcat</h4>
+						<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'DR'}">
+  									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
+  								</li>
   					</ul>
 				</div>
 			</div>
@@ -120,25 +130,75 @@
 				<div align="center">
 					<ul id="DR_Tomcat" style="list-style-type:none">
 						<h4 align="center">DR - Tomcat</h4>
+						<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'DR'}">
+  									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
+  								</li>
   					</ul>
 				</div>
 			</div>
 			</div>
 		</div>
 
-
+	
 	</div>
-	<div class="container"></div>
+	
 </body>
 <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
-<script src="dashboard.js" type="text/javascript"></script>
-<script type="text/javascript">
+<script>
+var app = angular.module('dashboardApp', []);
+app.controller('dashboardController', function($scope, $http ,$interval) {
+  	
+	var dashboardData;
 	
+	var httpRequest = function()
+	{
+		$http.get("/dashboard/midtier?operation=display")
+		  .then(function(response) {
+		      $scope.dashboardData = response.data;
+		  	var midtierStatus,upCount = 0;
+			  angular.forEach($scope.dashboardData,function(value){
+				  if(value.Status_IISHealth.toLowerCase() == "ok")
+					{
+					  if(value.Status_TomcatHealth.toLowerCase() == "ok"){ upCount = upCount + 1;}
+					  else{ midtierStatus = -1;}
+					} 
+			  });
+			  if(upCount >= 0)
+			  {
+			  	if(midtierStatus == -1 || upCount == 0){
+			  		$scope.midtierStatusClass = "alert alert-danger";
+			  		$scope.midtierStatusMesg = "The service is running with issues ..!!";
+			  	}
+			  	else
+			  		{
+			  		$scope.midtierStatusClass = "alert alert-success";
+			  		$scope.midtierStatusMesg = "The service is running on " +upCount+" nodes";
+			  		}
+			  }
+		      
+		      
+		      
+		  });
+	}
+	httpRequest();
 	
-	//show("test","");
-	self.setInterval(function(){clock()},7000);
+   $scope.setLabel = function(status)
+  {
+	  if(status.toLowerCase() =="ok"){
+		return "label label-success";  
+	  }else
+	  {
+		return "label label-danger";  
+	  }
+  }
+  
+  $interval(httpRequest,5000);
+});
+
+
 </script>
+
 </html>
 
 
