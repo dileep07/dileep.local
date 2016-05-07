@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 public class readMainConfig extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static String Midtier_List_Path;
-	public static String EnableLog = "No";
+	public static String EnableLog = "Yes";
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -46,7 +46,10 @@ public class readMainConfig extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		// TODO Auto-generated method stub
 		String configFilePath = config.getServletContext().getInitParameter("config.properties");
+		Midtier_List_Path = config.getServletContext().getInitParameter("Midtier-List");
 		System.out.println(config.getServletContext().getRealPath(configFilePath));
+		System.out.println(config.getServletContext().getRealPath(Midtier_List_Path));
+		Midtier_List_Path = config.getServletContext().getRealPath(Midtier_List_Path);
 		LoadServer(config.getServletContext().getRealPath(configFilePath));
 	}
 
@@ -62,9 +65,6 @@ public class readMainConfig extends HttpServlet {
 				if(line.trim().charAt(0)!="#".charAt(0)){
 				switch(line.substring(0,line.indexOf(":")).trim())
 				{
-				case "Midtier-List":
-					Midtier_List_Path = line.substring(line.indexOf(":")+1,line.length()).trim();
-					break;
 				case "EnableLog":
 					EnableLog = line.substring(line.indexOf(":")+1,line.length()).trim();
 					break;

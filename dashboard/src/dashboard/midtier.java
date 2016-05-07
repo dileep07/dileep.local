@@ -75,7 +75,8 @@ public class midtier extends HttpServlet implements Runnable {
 
 	private void LoadServer(String path) {
 		Path file = Paths.get(path);
-		try {
+		System.out.println(file)
+;		try {
 			BufferedReader reader = Files.newBufferedReader(file,StandardCharsets.UTF_8);
 			String line;
 			while ((line = reader.readLine()) != null) {

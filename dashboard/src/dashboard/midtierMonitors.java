@@ -13,7 +13,7 @@ public class midtierMonitors {
 	public String loadBalancerHealthCheck(String Server_Host_Name,String Server_Domain_Name)
 	{	
 		String return_Key="-1";
-		url_Defined = "http://"+Server_Host_Name+"-m."+Server_Domain_Name+"/healthcheck/";
+		url_Defined = "http://"+Server_Host_Name+"."+Server_Domain_Name+":8080/dashboard/ok.html";
 		
 		try {
 			URL url_object = new URL(url_Defined);
@@ -59,7 +59,7 @@ public class midtierMonitors {
 	public String TomcatHealthCheck(String Server_Host_Name,String Server_Domain_Name)
 	{	
 		String return_Key="-1";
-		url_Defined = "http://"+Server_Host_Name+"-m."+Server_Domain_Name+"/arsys/samples/StatusCheck.jsp";
+		url_Defined = "http://"+Server_Host_Name+"."+Server_Domain_Name+":8080/dashboard/200.html";
 		try {
 			URL url_object = new URL(url_Defined);
 			HttpURLConnection con = (HttpURLConnection) url_object.openConnection();
