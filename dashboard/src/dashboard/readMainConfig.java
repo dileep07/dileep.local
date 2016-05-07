@@ -1,0 +1,85 @@
+package dashboard;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class readMainConfig extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	public static String Midtier_List_Path;
+	public static String EnableLog = "No";
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public readMainConfig() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+	public void init(ServletConfig config) throws ServletException {
+		// TODO Auto-generated method stub
+		String configFilePath = config.getServletContext().getInitParameter("config.properties");
+		System.out.println(config.getServletContext().getRealPath(configFilePath));
+		LoadServer(config.getServletContext().getRealPath(configFilePath));
+	}
+
+	private void LoadServer(String path) {
+		// TODO Auto-generated method stub
+		Path file = Paths.get(path);
+
+		try {
+			BufferedReader reader = Files.newBufferedReader(file,StandardCharsets.UTF_8);
+			String line;
+			while ((line = reader.readLine()) != null) {
+			
+				if(line.trim().charAt(0)!="#".charAt(0)){
+				switch(line.substring(0,line.indexOf(":")).trim())
+				{
+				case "Midtier-List":
+					Midtier_List_Path = line.substring(line.indexOf(":")+1,line.length()).trim();
+					break;
+				case "EnableLog":
+					EnableLog = line.substring(line.indexOf(":")+1,line.length()).trim();
+					break;
+				}
+			}
+		}
+			
+
+		} catch (UnknownHostException e) {
+		} catch (NoSuchFileException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+}
