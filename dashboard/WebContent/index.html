@@ -122,7 +122,8 @@
 						<h4 align="center">Production - Tomcat</h4>
 						<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'PROD'}">
   									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
-  									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
+  									<span class="glyphicon glyphicon-arrow-right" aria-hidden="true" style="vertical-align:middle;"></span>
+  									<span align="center" class="label label-info">{{dashboard.Mapped_ARSHostName}}</span>
   								</li>
   					</ul>
 				</div>
@@ -135,7 +136,8 @@
 						<h4 align="center">DR - Tomcat</h4>
 						<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'DR'}">
   									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
-  									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
+  									<span class="glyphicon glyphicon-arrow-right" aria-hidden="true" style="vertical-align:middle;"></span>
+  									<span align="center" class="label label-info">{{dashboard.Mapped_ARSHostName}}</span>
   								</li>
   					</ul>
 				</div>

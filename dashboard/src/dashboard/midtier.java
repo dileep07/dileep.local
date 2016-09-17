@@ -54,6 +54,7 @@ public class midtier extends HttpServlet implements Runnable {
 				midtier_List_JSONObject.put("Server_Domain_Name",midtier_Array_List.get(i).getServer_Domain_Name());
 				midtier_List_JSONObject.put("Status_IISHealth",midtier_Array_List.get(i).getStatus_IISHealth());
 				midtier_List_JSONObject.put("Status_TomcatHealth",midtier_Array_List.get(i).getStatus_TomcatHealth());
+				midtier_List_JSONObject.put("Mapped_ARSHostName", midtier_Array_List.get(i).getMapped_ARSHostName());
 				midtier_List_JSONArray.add(midtier_List_JSONObject);
 			}
 		out.println(midtier_List_JSONArray);
@@ -80,8 +81,20 @@ public class midtier extends HttpServlet implements Runnable {
 			BufferedReader reader = Files.newBufferedReader(file,StandardCharsets.UTF_8);
 			String line;
 			while ((line = reader.readLine()) != null) {
+				if(line.trim().charAt(0)!="#".charAt(0)){
 				String result[] = line.split(",");
-				midtier_Array_List.add(new midtierStore(result[0],result[1],result[2],result[3],"NA","NA"));
+				/*		String environment,
+						String category,
+						String server_Host_Name,
+						String server_Domain_Name,
+						String status_IISHealth,
+						String status_TomcatHealth,
+						String mapped_ARSHostName,
+						String iisHealth_URL,
+						String tomcatHealth_URL
+				*/
+				midtier_Array_List.add(new midtierStore(result[0],result[1],result[2],result[3],"NA","NA","NA",result[4],result[5]));
+				}
 			}
 			System.out.println("Added Objects: "+midtier_Array_List.size());
 		} catch (UnknownHostException e) {
@@ -101,8 +114,11 @@ public class midtier extends HttpServlet implements Runnable {
 			String IISStatus_temp= "-1";
 			String TomcatStatus_temp = "-1";
 			for (i = 0; i < midtier_Array_List.size(); i++) {
-				IISStatus_temp=midtierMonitor.loadBalancerHealthCheck(midtier_Array_List.get(i).getServer_Host_Name(),midtier_Array_List.get(i).getServer_Domain_Name());
-				TomcatStatus_temp = midtierMonitor.TomcatHealthCheck(midtier_Array_List.get(i).getServer_Host_Name(),midtier_Array_List.get(i).getServer_Domain_Name());
+				IISStatus_temp=midtierMonitor.loadBalancerHealthCheck(midtier_Array_List.get(i).getServer_Host_Name(),
+						midtier_Array_List.get(i).getServer_Domain_Name(),midtier_Array_List.get(i).getIISHealth_URL());
+				TomcatStatus_temp = midtierMonitor.TomcatHealthCheck(midtier_Array_List.get(i).getServer_Host_Name(),
+						midtier_Array_List.get(i).getServer_Domain_Name(),
+						midtier_Array_List.get(i).getTomcatHealth_URL());
 				if(IISStatus_temp.equals("-1"))
 				{
 					midtier_Array_List.get(i).setStatus_IISHealth("Not Recheable");

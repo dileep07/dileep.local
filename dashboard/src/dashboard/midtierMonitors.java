@@ -10,10 +10,10 @@ import java.net.URL;
 
 public class midtierMonitors {
 	private String url_Defined;
-	public String loadBalancerHealthCheck(String Server_Host_Name,String Server_Domain_Name)
+	public String loadBalancerHealthCheck(String Server_Host_Name,String Server_Domain_Name,String IISHealth_URL)
 	{	
 		String return_Key="-1";
-		url_Defined = "http://"+Server_Host_Name+"."+Server_Domain_Name+":8080/dashboard/ok.html";
+		url_Defined = IISHealth_URL;
 		
 		try {
 			URL url_object = new URL(url_Defined);
@@ -56,10 +56,10 @@ public class midtierMonitors {
 		
 		return return_Key;
 	}
-	public String TomcatHealthCheck(String Server_Host_Name,String Server_Domain_Name)
+	public String TomcatHealthCheck(String Server_Host_Name,String Server_Domain_Name,String TomcatHealthURL)
 	{	
 		String return_Key="-1";
-		url_Defined = "http://"+Server_Host_Name+"."+Server_Domain_Name+":8080/dashboard/200.html";
+		url_Defined = TomcatHealthURL;
 		try {
 			URL url_object = new URL(url_Defined);
 			HttpURLConnection con = (HttpURLConnection) url_object.openConnection();

@@ -24,7 +24,7 @@ import org.json.simple.JSONObject;
 public class readMainConfig extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static String Midtier_List_Path;
-	public static String EnableLog = "Yes";
+	public static String EnableLog = "No";
 	public static int Web_Refresh_Interval = 11;
 	public static int Monitor_Polling_Interval = 20;
     /**
