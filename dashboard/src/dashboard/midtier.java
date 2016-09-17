@@ -121,7 +121,7 @@ public class midtier extends HttpServlet implements Runnable {
 				}
 			}
 			try {
-				Thread.sleep(15000);
+				Thread.sleep(readMainConfig.Monitor_Polling_Interval * 1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

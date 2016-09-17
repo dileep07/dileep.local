@@ -67,7 +67,9 @@
 				</nav>
 			</div>
 		</div>
-
+		<div class="row">
+			<div class="col-md-12"><h4 align="center" ng-class="serverErrorMesgClass">{{serverErrorMesg}}</h4></div>
+		</div>
 		<!-- Page Heading -->
 		<!-- ################################################################# -->
 		<div class="row">
@@ -118,7 +120,8 @@
 				<div align="center">
 					<ul id="PROD_Tomcat" style="list-style-type:none">
 						<h4 align="center">Production - Tomcat</h4>
-						<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'DR'}">
+						<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'PROD'}">
+  									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
   									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
   								</li>
   					</ul>
@@ -131,6 +134,7 @@
 					<ul id="DR_Tomcat" style="list-style-type:none">
 						<h4 align="center">DR - Tomcat</h4>
 						<li ng-repeat="dashboard in dashboardData | filter:{Environment : 'DR'}">
+  									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
   									<span align="center" ng-class="setLabel('{{dashboard.Status_TomcatHealth}}')">{{dashboard.Server_Host_Name +" - "+ dashboard.Status_TomcatHealth}}</span>
   								</li>
   					</ul>

@@ -2,7 +2,18 @@ var app = angular.module('dashboardApp', []);
 app.controller('dashboardController', function($scope, $http ,$interval) {
   	
 	var dashboardData;
-	
+	var web_refresh_interval;
+	var setWindowRefresh = function(){
+	$http.get("/dashboard/readMainConfig?operation=readconfig").then(function(response){
+		web_refresh_interval = response.data.Web_Refresh_Interval;
+		if(!web_refresh_interval)
+			{
+			web_refresh_interval = 10;
+			
+			}
+		 $interval(httpRequest,web_refresh_interval*1000);
+	});
+	}
 	var httpRequest = function()
 	{
 		$http.get("/dashboard/midtier?operation=display")
@@ -31,11 +42,13 @@ app.controller('dashboardController', function($scope, $http ,$interval) {
 		      
 		      
 		      
+		  },function(){
+			  $scope.serverErrorMesgClass = "alert alert-danger";
+			  $scope.serverErrorMesg = "Oh snap! Lost contact to the server!";
 		  });
 	}
-	httpRequest();
 	
-   $scope.setLabel = function(status)
+	$scope.setLabel = function(status)
   {
 	  if(status.toLowerCase() =="ok"){
 		return "label label-success";  
@@ -44,7 +57,9 @@ app.controller('dashboardController', function($scope, $http ,$interval) {
 		return "label label-danger";  
 	  }
   }
-  
-  $interval(httpRequest,5000);
+	httpRequest();
+	setWindowRefresh();
+   
+ 
 });
 
