@@ -22,11 +22,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 
-public class midtier extends HttpServlet implements Runnable {
+public class midtier extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String Requested_Operation;
+	midtierMonitors monitor = new midtierMonitors();
+	Thread th = new Thread(monitor);
+	
 	public static ArrayList<midtierStore> midtier_Array_List = new ArrayList<midtierStore>();
-	Thread th = new Thread(this);
+	
      /**
      * @see HttpServlet#HttpServlet()
      */
@@ -42,6 +45,7 @@ public class midtier extends HttpServlet implements Runnable {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		Requested_Operation = request.getParameter("operation");
+		
 		if(Requested_Operation.equalsIgnoreCase("display"))
 		{
 			JSONArray midtier_List_JSONArray = new JSONArray();
@@ -105,42 +109,5 @@ public class midtier extends HttpServlet implements Runnable {
 		}
 	}
 	
-	public void run(){
-		midtierMonitors midtierMonitor = new midtierMonitors();
-		for(;;)
-		{
-			
-			int i = 0;
-			String IISStatus_temp= "-1";
-			String TomcatStatus_temp = "-1";
-			for (i = 0; i < midtier_Array_List.size(); i++) {
-				IISStatus_temp=midtierMonitor.loadBalancerHealthCheck(midtier_Array_List.get(i).getServer_Host_Name(),
-						midtier_Array_List.get(i).getServer_Domain_Name(),midtier_Array_List.get(i).getIISHealth_URL());
-				TomcatStatus_temp = midtierMonitor.TomcatHealthCheck(midtier_Array_List.get(i).getServer_Host_Name(),
-						midtier_Array_List.get(i).getServer_Domain_Name(),
-						midtier_Array_List.get(i).getTomcatHealth_URL());
-				if(IISStatus_temp.equals("-1"))
-				{
-					midtier_Array_List.get(i).setStatus_IISHealth("Not Recheable");
-				}else
-				{
-					midtier_Array_List.get(i).setStatus_IISHealth(IISStatus_temp);
-				}
-				if(TomcatStatus_temp.equals("OK"))
-				{
-					midtier_Array_List.get(i).setStatus_TomcatHealth("OK");
-				}else if (TomcatStatus_temp.equals("FAIL")){
-					midtier_Array_List.get(i).setStatus_TomcatHealth("FAIL");
-				}else
-				{
-					midtier_Array_List.get(i).setStatus_TomcatHealth(TomcatStatus_temp);
-				}
-			}
-			try {
-				Thread.sleep(readMainConfig.Monitor_Polling_Interval * 1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	
 }
